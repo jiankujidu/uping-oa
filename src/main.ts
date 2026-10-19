@@ -48,7 +48,7 @@ app.mount('#app')
   router,
   device,
   auth,
-  routes: router.getRoutes().map((r) => ({ path: r.path, name: String(r.name), component: typeof r.component })),
+  routes: router.getRoutes().map((r) => ({ path: r.path, name: String(r.name), hasComp: !!r.components })),
   app
 }
 
