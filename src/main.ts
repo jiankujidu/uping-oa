@@ -21,22 +21,10 @@ device.bind()
 // 命令注册表：业务命令只注册一次，手机端绑定长按/ActionSheet，桌面端绑定右键/快捷键
 registerBuiltinCommands()
 
-// 调试：initial navigation 状态探针
+// 调试：initial navigation 状态探针（白屏时 F12 看这几行即可定位）
 router.isReady().then(() => {
   console.log('[dbg] router ready, path =', JSON.stringify(router.currentRoute.value.path), 'matched =', router.currentRoute.value.matched.length)
 }).catch((e) => console.warn('[dbg] router NOT ready:', e))
-
-// 兜底：install 的 initial navigation 可能因判据失败未执行 → currentRoute 停在
-// START（matched=[]）。注意：hash 已被解析成实际路径（如 #/home → /home），
-// 所以不能只判 path==='/'，必须判「matched 为空」，按当前 history 位置手动补推。
-setTimeout(() => {
-  const r = router.currentRoute.value
-  if (r && r.matched.length === 0) {
-    const target = router.options.history.location || r.path || '/'
-    console.log('[dbg] initial navigation 未启动(matched=0)，手动补推到', target)
-    router.push(target).catch((e) => console.warn('[dbg] manual push fail:', e))
-  }
-}, 400)
 
 // 登录态持久化标记（供路由守卫）
 const auth = useAuthStore()
@@ -55,9 +43,16 @@ app.mount('#app')
   app
 }
 
-// 注册 Service Worker（PWA，GitHub Pages HTTPS 下可用）
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {})
+// 不注册 Service Worker：OA 工具要接实时接口，SW 缓存 HTML 会导致发版后
+// 刷新仍拿到旧白屏版（已实测卡死白屏）。直接移除 PWA 缓存，保证每次刷新即最新。
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then((rs) => {
+    rs.forEach((r) => r.unregister())
   })
+  // 清掉旧版本缓存桶（upoa-v*），避免残留继续拦截请求
+  if ('caches' in window) {
+    caches.keys().then((ks) =>
+      Promise.all(ks.filter((k) => k.startsWith('upoa-v')).map((k) => caches.delete(k)))
+    )
+  }
 }

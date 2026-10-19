@@ -139,9 +139,17 @@ export default {
       return handleProxy(request, url, env)
     }
 
-    // 静态资源（Workers Assets）
+    // 静态资源（Workers Assets）。HTML 入口强制 no-cache，杜绝发版后仍拿旧版白屏
     if (env && env.ASSETS) {
-      return env.ASSETS.fetch(request)
+      const res = await env.ASSETS.fetch(request)
+      const ct = (res.headers.get('content-type') || '').toLowerCase()
+      if (ct.includes('text/html')) {
+        res.headers.set('cache-control', 'no-cache, no-store, must-revalidate')
+        res.headers.set('pragma', 'no-cache')
+        res.headers.delete('age')
+        res.headers.delete('cf-cache-status')
+      }
+      return res
     }
 
     return json({ ok: false, msg: '未绑定静态资源（ASSETS）', path: url.pathname }, 404)
