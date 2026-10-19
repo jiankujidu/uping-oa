@@ -47,4 +47,10 @@ router.beforeEach((to) => {
   return true
 })
 
+// 调试：导航失败/重定向循环诊断（上线后可移除）
+router.afterEach((to, _from, failure) => {
+  if (failure) console.warn('[router-failure]', to.fullPath, failure.type, failure.message || '')
+})
+router.onError((e) => console.warn('[router-error]', e))
+
 export default router
