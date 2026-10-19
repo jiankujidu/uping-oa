@@ -1,0 +1,149 @@
+/* ============================================================
+   优品OA Design Tokens —— 从原 APK www/css/style.css 逐值提取
+   手机端严格使用；桌面端延用（仅密度微调，不引入第三方设计语言）
+   ============================================================ */
+:root {
+  /* ---- 颜色 ---- */
+  --color-primary: #1E6FFF;
+  --color-primary-2: #4A9BFF;
+  --color-primary-bg: #EAF2FF;
+  --color-primary-bg-2: #EEF4FF;
+  --color-danger: #FF3B30;
+  --color-danger-bg: #FCEBEB;
+  --color-error: #E64340;
+  --color-success: #07C160;
+  --color-warning: #FF9F2E;
+
+  --color-bg: #F5F6F8;
+  --color-card: #FFFFFF;
+  --color-text: #333333;
+  --color-text-2: #666666;
+  --color-text-3: #8A8F99;
+  --color-text-4: #999999;
+  --color-text-inverse: #FFFFFF;
+  --color-text-strong: #1F2329;
+  --color-border: #E8ECF2;
+  --color-divider: #F2F4F7;
+  --color-input-bg: #FAFCFF;
+  --color-seg-bg: #EEF1F5;
+  --color-mask: rgba(0, 0, 0, .45);
+  --color-toast-bg: rgba(0, 0, 0, .78);
+
+  /* ---- 圆角 ---- */
+  --radius-card: 12px;
+  --radius-input: 10px;
+  --radius-panel: 14px;
+  --radius-btn: 12px;
+  --radius-btn-sm: 8px;
+  --radius-badge: 8px;
+  --radius-chip: 6px;
+
+  /* ---- 阴影 ---- */
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, .05);
+  --shadow-panel: 0 -6px 20px rgba(0, 0, 0, .12);
+  --shadow-login: 0 10px 36px rgba(30, 111, 255, .28);
+  --shadow-seg-active: 0 1px 3px rgba(0, 0, 0, .08);
+  --shadow-badge: 0 1px 3px rgba(0, 0, 0, .25);
+  /* 桌面端阴影更轻，与手机端同一设计语言 */
+  --shadow-desktop: 0 1px 2px rgba(0, 0, 0, .06);
+
+  /* ---- 字号（px 与源码一致，不缩放） ---- */
+  --font-xs: 10px;
+  --font-sm: 11px;
+  --font-smd: 12px;
+  --font-base: 13px;
+  --font-md: 15px;
+  --font-lg: 17px;
+  --font-xl: 38px;
+  --font-login-logo: 26px;
+
+  /* ---- 结构尺寸（手机端） ---- */
+  --topbar-h: 48px;
+  --tabbar-h: 56px;
+  --tab-icon-size: 20px;
+
+  /* ---- 间距节奏 ---- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 10px;
+  --sp-4: 12px;
+  --sp-5: 14px;
+  --sp-6: 20px;
+  --sp-7: 26px;
+
+  /* ---- 动效 ---- */
+  --dur-panel: .25s ease;
+  --dur-fast: .2s;
+
+  /* ---- 字体 ---- */
+  --font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+/* ============================================================
+   全局基座（对应源码 * / html,body 规则）
+   ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; font-family: var(--font-family); background: var(--color-bg); color: var(--color-text); }
+body { overflow: hidden; }
+#app { height: 100%; }
+
+button { font-family: inherit; border: none; background: none; cursor: pointer; color: inherit; }
+input, textarea, select { font-family: inherit; outline: none; }
+a { color: var(--color-primary); text-decoration: none; }
+
+/* 滚动条（桌面端） */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,.18); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,.3); }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ============================================================
+   通用组件（从源码逐值搬运，手机端 1:1）
+   ============================================================ */
+.card { background: var(--color-card); border-radius: var(--radius-card); margin: var(--sp-3) var(--sp-4); padding: var(--sp-5); box-shadow: var(--shadow-card); }
+.card-title { font-size: var(--font-md); font-weight: 600; color: var(--color-text); margin-bottom: 6px; }
+.card-line { font-size: var(--font-base); color: var(--color-text-3); line-height: 1.6; }
+.card-line b { color: var(--color-text); font-weight: 600; }
+
+.seg { display: flex; background: var(--color-seg-bg); border-radius: var(--radius-input); margin: var(--sp-3) var(--sp-4); padding: 3px; }
+.seg-item { flex: 1; text-align: center; padding: 8px 0; font-size: var(--font-base); color: var(--color-text-2); border-radius: 8px; transition: all var(--dur-fast); }
+.seg-item.active { background: var(--color-card); color: var(--color-primary); font-weight: 600; box-shadow: var(--shadow-seg-active); }
+
+.form-input, .form-select, .form-textarea {
+  width: 100%; border: 1px solid var(--color-border); border-radius: var(--radius-input);
+  padding: 10px var(--sp-4); font-size: var(--font-base); background: var(--color-input-bg); color: var(--color-text);
+  transition: border-color var(--dur-fast), background var(--dur-fast);
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--color-primary); background: var(--color-card); }
+.form-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+.act-btn {
+  background: var(--color-primary); color: var(--color-card); border-radius: var(--radius-btn-sm);
+  padding: 8px 16px; font-size: var(--font-base); font-weight: 500;
+}
+.act-btn.ghost { background: var(--color-card); color: var(--color-primary); border: 1px solid var(--color-primary); }
+.act-btn.danger { background: var(--color-danger); color: #fff; }
+.act-btn:disabled { opacity: .5; }
+.act-btn.block { display: block; width: 100%; }
+
+.empty-state { text-align: center; padding: 60px 24px; color: var(--color-text-4); }
+.empty-state .empty-icon { font-size: 44px; line-height: 1; margin-bottom: var(--sp-4); opacity: .5; }
+.empty-state .empty-text { font-size: var(--font-base); margin-bottom: var(--sp-5); }
+
+.list-loading { text-align: center; padding: var(--sp-6); color: var(--color-text-4); font-size: var(--font-base); }
+.list-end { text-align: center; padding: var(--sp-4); color: var(--color-text-4); font-size: var(--font-smd); }
+
+/* 骨架屏（对应源码 loading 态） */
+.skeleton { background: linear-gradient(90deg, #eef1f5 25%, #f7f9fb 50%, #eef1f5 75%); background-size: 200% 100%; animation: sk-flow 1.2s infinite; border-radius: 6px; }
+@keyframes sk-flow { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skeleton-row { height: 72px; margin: var(--sp-3) var(--sp-4); border-radius: var(--radius-card); }
+
+/* Toast（对应源码 app-toast） */
+.app-toast {
+  position: fixed; left: 50%; bottom: 120px; transform: translateX(-50%);
+  background: var(--color-toast-bg); color: #fff; font-size: var(--font-base);
+  padding: 8px 16px; border-radius: 8px; z-index: 9999; max-width: 80%; text-align: center;
+}
+
+/* 触控目标下限 */
+.tap-44 { min-width: 44px; min-height: 44px; }

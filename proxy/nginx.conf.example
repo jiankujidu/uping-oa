@@ -1,0 +1,30 @@
+# Nginx 反代（方案 B）—— 有自有服务器 / fnOS NAS 时用。
+# 放置于 server {} 块内，假定站点由 443 端口提供服务（反代与网页同域，无 CORS 问题）。
+
+location /oa-api/ {
+    proxy_pass https://oa.upingbio.cn/;
+
+    # 过 WAF 防盗链（必须）
+    proxy_set_header Referer https://oa.upingbio.cn/;
+    proxy_set_header Host oa.upingbio.cn;
+    proxy_set_header User-Agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+
+    # 透传客户端真实 IP（后端日志需要时）
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # Cookie 跨域改写：SameSite=None; Secure（若网页与反代不同域才需要）
+    proxy_cookie_path / "/; SameSite=None; Secure";
+
+    # 长连接/超时（文档下载可能较大）
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    proxy_read_timeout 120s;
+
+    # 大文件（docx/PDF 附件）
+    client_max_body_size 50m;
+}
+
+# 站点 VITE_PROXY_BASE=""（同域空值），请求路径自动加 /oa-api 前缀的地方：
+# 需要在应用侧将 API.BASE 设为 '/oa-api'（client.ts 已支持空值降级 mock）。

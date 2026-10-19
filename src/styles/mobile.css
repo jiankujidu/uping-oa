@@ -1,0 +1,61 @@
+/* ============================================================
+   手机端布局样式（对应源码 .app-view/.topbar/.tabbar，1:1 还原）
+   ============================================================ */
+.mobile-layout { position: fixed; inset: 0; display: flex; flex-direction: column; background: var(--color-bg); }
+
+.mobile-topbar {
+  min-height: var(--topbar-h); background: var(--color-primary); color: #fff;
+  display: flex; align-items: center; padding: 0 var(--sp-4);
+  padding-top: env(safe-area-inset-top);
+  position: relative; z-index: 10;
+}
+.mobile-topbar .topbar-back { font-size: var(--font-base); color: #fff; padding: var(--sp-2) var(--sp-2) var(--sp-2) 0; margin-right: var(--sp-1); white-space: nowrap; min-width: 44px; min-height: 44px; display: flex; align-items: center; }
+.mobile-topbar .topbar-title { font-size: var(--font-lg); font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mobile-topbar .topbar-right { display: flex; align-items: center; }
+.mobile-topbar .topbar-btn { font-size: var(--font-base); color: #fff; opacity: .9; background: rgba(255,255,255,.18); padding: var(--sp-1) var(--sp-3); border-radius: 14px; margin-left: var(--sp-2); }
+.mobile-topbar .bell-btn { position: relative; padding: var(--sp-1) 9px; }
+.mobile-topbar .bell-badge {
+  position: absolute; top: -5px; right: -6px; min-width: 16px; height: 16px; line-height: 16px;
+  padding: 0 var(--sp-1); background: var(--color-danger); color: #fff; font-size: var(--font-xs);
+  font-weight: 600; border-radius: 8px; text-align: center; box-shadow: var(--shadow-badge);
+}
+
+.mobile-page { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: var(--sp-4); overscroll-behavior: contain; }
+
+.mobile-tabbar { height: calc(var(--tabbar-h) + env(safe-area-inset-bottom)); background: var(--color-card); border-top: 1px solid var(--color-border); display: flex; padding-bottom: env(safe-area-inset-bottom); }
+.mobile-tabbar .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--color-text-3); font-size: var(--font-sm); }
+.mobile-tabbar .tab-item.active { color: var(--color-primary); }
+.mobile-tabbar .tab-icon { font-size: var(--tab-icon-size); line-height: 22px; font-weight: 700; }
+.mobile-tabbar .tab-icon svg { display: block; }
+
+/* 页面转场（detail shell 推入，对应源码 navStack） */
+.page-slide-enter-active, .page-slide-leave-active { transition: transform var(--dur-panel), opacity var(--dur-panel); }
+.page-slide-enter-from { transform: translateX(30%); opacity: 0; }
+.page-slide-leave-to { transform: translateX(-12%); opacity: 0; }
+
+/* 底部 ActionSheet 宿主 */
+.action-sheet-mask { position: fixed; inset: 0; background: var(--color-mask); z-index: 1000; }
+.action-sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; background: var(--color-card);
+  border-radius: var(--radius-panel) var(--radius-panel) 0 0; z-index: 1001;
+  padding: var(--sp-4) var(--sp-4) calc(var(--sp-4) + env(safe-area-inset-bottom));
+  box-shadow: var(--shadow-panel); transform: translateY(100%); transition: transform var(--dur-panel);
+  max-height: 78vh; display: flex; flex-direction: column;
+}
+.action-sheet.open { transform: translateY(0); }
+.action-sheet-title { font-size: var(--font-md); font-weight: 600; color: var(--color-text-strong); text-align: center; padding: var(--sp-2) 0 var(--sp-4); }
+
+/* 二次确认弹窗（居中模态，手机端） */
+.confirm-mask { position: fixed; inset: 0; background: var(--color-mask); z-index: 1100; display: flex; align-items: center; justify-content: center; padding: 32px; }
+.confirm-dialog { background: var(--color-card); border-radius: var(--radius-card); width: 100%; max-width: 320px; overflow: hidden; }
+.confirm-body { padding: var(--sp-6) var(--sp-5); font-size: var(--font-base); color: var(--color-text); line-height: 1.6; text-align: center; }
+.confirm-foot { display: flex; border-top: 1px solid var(--color-divider); }
+.confirm-foot button { flex: 1; padding: var(--sp-4) 0; font-size: var(--font-base); color: var(--color-text-3); }
+.confirm-foot button.ok { color: var(--color-primary); font-weight: 600; border-left: 1px solid var(--color-divider); }
+.confirm-foot button.danger { color: var(--color-danger); font-weight: 600; border-left: 1px solid var(--color-divider); }
+
+/* 下拉刷新（手机端专属，桌面端用刷新按钮替代） */
+.pull-refresh-indicator { text-align: center; color: var(--color-text-4); font-size: var(--font-smd); height: 0; overflow: hidden; transition: height var(--dur-fast); }
+.pull-refresh-indicator.show { height: 40px; line-height: 40px; }
+.pull-refresh-indicator .spin { display: inline-block; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
