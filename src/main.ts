@@ -26,12 +26,15 @@ router.isReady().then(() => {
   console.log('[dbg] router ready, path =', JSON.stringify(router.currentRoute.value.path), 'matched =', router.currentRoute.value.matched.length)
 }).catch((e) => console.warn('[dbg] router NOT ready:', e))
 
-// 兜底：若 install 的 initial navigation 因判据失败未启动（currentRoute 停在 START），手动补推
+// 兜底：install 的 initial navigation 可能因判据失败未执行 → currentRoute 停在
+// START（matched=[]）。注意：hash 已被解析成实际路径（如 #/home → /home），
+// 所以不能只判 path==='/'，必须判「matched 为空」，按当前 history 位置手动补推。
 setTimeout(() => {
   const r = router.currentRoute.value
-  if (r && r.matched.length === 0 && r.path === '/') {
-    console.log('[dbg] initial navigation 未启动，手动补推到', router.options.history.location)
-    router.push(router.options.history.location).catch((e) => console.warn('[dbg] manual push fail:', e))
+  if (r && r.matched.length === 0) {
+    const target = router.options.history.location || r.path || '/'
+    console.log('[dbg] initial navigation 未启动(matched=0)，手动补推到', target)
+    router.push(target).catch((e) => console.warn('[dbg] manual push fail:', e))
   }
 }, 400)
 
