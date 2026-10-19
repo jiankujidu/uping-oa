@@ -6,3 +6,8 @@ dist/
 .DS_Store
 .ghtok*
 vite.config.ts.timestamp-*
+
+# wrangler OAuth credentials / local cache (never commit)
+xdg.config/
+.wrangler/
+.cf-login-url.txt

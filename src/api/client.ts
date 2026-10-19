@@ -19,13 +19,26 @@ export interface ApiResult {
  * 反代地址解析优先级：
  *  1. localStorage 'upoa:proxy_base'（运行时可改，部署后切换代理不必重新构建）
  *  2. 构建期 VITE_PROXY_BASE
+ *  3. 同源默认：挂自有域名（Workers Assets + /proxy）时走相对路径 /proxy
+ *     —— 页面与接口同源，浏览器不做跨域判定，Cookie 即一方 Cookie
+ *  4. GitHub Pages（*.github.io）无 /proxy，返回空 → 自动降级 mock
  * 例：浏览器控制台 localStorage.setItem('upoa:proxy_base','https://oa.example.com')
  */
 const PROXY_BASE: string = (() => {
-  const bv = ((import.meta as any).env?.VITE_PROXY_BASE || '').replace(/\/+$/, '')
-  if (typeof localStorage === 'undefined') return bv
-  const rt = (localStorage.getItem('upoa:proxy_base') || '').replace(/\/+$/, '')
-  return rt || bv
+  const norm = (s: string) => s.replace(/\/+$/, '')
+  const bv = norm((import.meta as any).env?.VITE_PROXY_BASE || '')
+  let rt = ''
+  try {
+    rt = norm(localStorage.getItem('upoa:proxy_base') || '')
+  } catch {}
+  if (rt) return rt
+  if (bv) return bv
+  if (typeof location === 'undefined') return ''
+  const host = location.hostname || ''
+  // GH Pages 静态托管没有反代，交给 mock
+  if (host.endsWith('.github.io')) return ''
+  // 自有域名 / 本地：默认同源网关
+  return '/proxy'
 })()
 const TIMEOUT = 12000
 const RETRY = 1
